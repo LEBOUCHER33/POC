@@ -70,7 +70,6 @@ La version initiale a été publiée en août 2025.
 https://arxiv.org/abs/2509.25193
 
 
-Bien que Devstral‑2‑123B‑Instruct‑2512 ait été conçu initialement pour des applications de développement logiciel et d’agents de code, sa capacité à suivre des instructions et à traiter de larges contextes textuels le rend applicable à des tâches de NLP classiques. Dans ce travail, nous l’avons utilisé pour la classification multi-classe de textes, en exploitant le prompt engineering, en utilisant un prompt clair et structuré.
 
 
 ### Performances et sécurité

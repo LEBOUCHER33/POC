@@ -22,13 +22,8 @@ Il y a 7 catégories différentes pour classer les articles sans biais de repré
 
 ## Méthode
 
-Nous testerons le dernier grand modèle LLM de traitement de texte développé par Méta, LLAMA2.
+Nous testerons le dernier grand modèle LLM de traitement de texte développé par Mistral AI, Devstral‑2‑2512 [août 2025].
 
-Raisons argumentant ce choix dans le cadre d'une preuve de concept de la méthode :
+Devstral est un modèle de langage spécialisé pour les agents logiciels et la génération de code, mais sa nature de LLM instructif lui permet également d’être utilisé pour des tâches de NLP classiques, comme la classification de textes, le résumé ou l’extraction d’information.
 
-- LLM Open Source
-- performances du modèle comparativement à d'autres
-- disponibilité du modèle pré-entrainé avec 4 poids différents
-- très bon compromis qualité / simplicité
-- facile à intégrer avec Hugging Face
-- pas besoin de fine-tuning pour démontrer de la valeur
+Sa capacité à suivre des instructions et à traiter de larges contextes textuels le rend applicable à des tâches de NLP classiques. Dans ce travail, nous l’avons utilisé pour la classification multi-classe de textes, en exploitant le prompt engineering, en utilisant un prompt clair et structuré.
