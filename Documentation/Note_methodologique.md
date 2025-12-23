@@ -144,11 +144,40 @@ Temps d’inférence et consommation mémoire pour l’évaluation de l’effica
 
 ## Synthèse des résultats
 
+Accuracy : 0.84 → 84 % des produits sont correctement classés.
+
+Macro F1-score : 0.86 → performance moyenne sur toutes les catégories.
+
+Weighted F1-score : 0.85 → performance moyenne pondérée par le nombre d’exemples par catégorie.
+
+Globalement, le modèle est plutôt performant pour ce type de classification multi-classes.
+
+Précision élevée sur la plupart des catégories.
+
+Comme constaté lors du projet 6 : Home Furnishing et Home Decor & Festive Needs sont problématiques.
+
+- Home Decor & Festive Needs : beaucoup de produits d’autres catégories classés ici → faux positifs.
+- Home Furnishing : beaucoup de vrais produits non reconnus → faux négatifs.
+→ Ces catégories sont probablement proches lexicalement dans les descriptions, ce qui crée des confusions.
+
+Autres catégories : Baby Care, Beauty, Computers, Kitchen & Dining et Watches sont très fiables.
 
 
 ## Analyse de la feature importance locale et globale
 
+Pour un modèle basé sur texte comme un LLM, les “features” sont les tokens du texte.
+La feature importance globale mesure l’importance moyenne de chaque mot ou token pour la classification sur l’ensemble du dataset.
+La feature importance locale mesure l’influence de chaque mot ou segment de texte pour un exemple donné.
 
+On peut évaluer une importance locale approximative directement depuis le LLM, avec une approche rapide “prompt-based explainability”.
 
 
 ## Limitations et améliorations possibles
+
+Modèle utilisable pour tri rapide de produits : 84 % de réussite globale.
+
+Améliorations possibles :
+
+- raffiner le prompt pour mieux distinguer Home Furnishing / Home Decor & Festive Needs.
+
+- ajouter des exemples supplémentaires pour les catégories ambigües.
