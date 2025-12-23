@@ -1,7 +1,6 @@
 # Note méthodologique : Preuve de Concept
 
 
-
 ## I- Dataset 
 
 Le dataset référence 1050 articles vendus sur une marketplace.
@@ -55,159 +54,101 @@ Enfin, on peut s'intéresser lors des analyses préliminaires aux distributions 
 
 ### Généralités
 
-Llama 2 est une famille de modèles linguistiques causaux autorégressifs, développée par Meta AI, basés sur des transformeurs. Les modèles linguistiques autorégressifs prennent une séquence de mots en entrée et prédisent récursivement en sortie le(s) mot(s) suivant(s).
+Devstral est un modèle de langage spécialisé pour les agents logiciels et la génération de code, mais sa nature de LLM instructif lui permet également d’être utilisé pour des tâches de NLP classiques, comme la classification de textes, le résumé ou l’extraction d’information.
+La version utilisée dans ce travail est Devstral‑2‑2512.
 
-Llama-2-chat est affiné pour les cas d'utilisation axés sur le dialogue et un assistant de code code-LlaMA.
+Devstral 2 est un modèle open source de pointe développé par Mistral AI, spécialisé dans le codage agentique. Il s'agit d'un modèle de transformateur dense à 123 milliards de paramètres prenant en charge une fenêtre contextuelle de 256 000 caractères.
+L’objectif du modèle était de créer une version rapide, légère et efficace, adaptée à des usages agentiques tout en restant performant malgré une taille réduite.
 
-La version initiale a été publiée en février 2023, en quatre tailles différentes : 7, 13, 33 et 65 milliards de paramètres.
-https://arxiv.org/abs/2307.09288
+Il s'inscrit dans la catégorie des grands modèles de langage souvent employés pour générer ou assister dans du code logiciel mais a été élaboré avec l'ajout de spécialisations agentiques, c’est‑à‑dire des ajustements et adaptations pour des interactions de style agent (compréhension contextuelle, génération de code, pipelines logiciels).
 
-Il prend en entrée du texte et génère du texte en sortie (pas de multimodalité).
+Il a été designé et *fine-tuné* pour des tâches de génération, chat ou tâches agentiques pour le développement logiciel.
 
-LLAMA 2 excelle dans la compréhension du langage naturel grâce à son entraînement massif (environ 2 000 milliards de tokens) et à la diversité de ses sources de données. Il est ainsi capable de :
+Il existe plusieurs versions : la version “Small” (~24 B paramètres) et la version “Instruct” complète (~123 B paramètres), cette dernière étant optimisée pour suivre des instructions complexes et gérer des bases de code étendues.
 
-- Analyser, interpréter et répondre à des questions complexes
-- Résumer des textes longs
-- Extraire des informations clés
-- Comprendre le contexte implicite d’une conversation ou d’un document
+La version initiale a été publiée en août 2025.
+https://arxiv.org/abs/2509.25193
 
-L’un des aspects les plus marquants de LLAMA 2 est son statut open source. Meta a choisi de publier le modèle sous une licence permissive qui autorise la recherche et l’utilisation commerciale.
-Cette ouverture favorise l’innovation collaborative, la transparence et l’auditabilité du modèle. Elle permet également aux développeurs et aux entreprises d’adapter LLAMA 2 à leurs besoins spécifiques, de l’intégrer dans leurs applications, mais aussi de le peaufiner (fine-tuning) sur des jeux de données privés pour des cas d’usage spécialisés.
+
+Bien que Devstral‑2‑123B‑Instruct‑2512 ait été conçu initialement pour des applications de développement logiciel et d’agents de code, sa capacité à suivre des instructions et à traiter de larges contextes textuels le rend applicable à des tâches de NLP classiques. Dans ce travail, nous l’avons utilisé pour la classification multi-classe de textes, en exploitant le prompt engineering, en utilisant un prompt clair et structuré.
+
 
 ### Performances et sécurité
 
-LLaMA 2 surpasse de nombreux modèles open-source existants sur la plupart des benchmarks testés.
+Devstral‑2 montre des résultats significativement élevés, dépassant de nombreux modèles open source populaires.
 
-Des évaluations humaines ont été utilisées pour mesurer à la fois la pertinence des réponses et la sécurité des comportements générés.
+- taille du modèle fixée autour de 24 B paramètres pour assurer rapidité et faible empreinte.
+- conception pour servir facilement en production (facilité de déploiement, temps de réponse, efficacité).
+- Devstral‑Small atteint des performances compétitives comparées à des modèles plus de dix fois plus gros sur des tâches liées au codage logiciel et aux agents logiciels.
 
-Un effort particulier a été porté sur le fine-tuning pour améliorer la sécurité et la pertinence des réponses, en intégrant plus d’un million d’annotations humaines pour affiner le comportement du modèle.
+![alt text](mistral-ai-perf_devstral.webp)
 
-![alt text](Llama2_safety.png)
+Sécurité et robustesse : Le modèle intègre des mécanismes de filtrage et de suivi des instructions, ce qui limite la génération de contenu inapproprié. 
 
-![alt text](Llama2_perf.png)
 
 ### Concept de l'algorithme
 
-LLaMA 2 est un modèle Transformer auto-régresseur (decoder-only).
-Il prend en entrée une séquence de tokens et prédit le token suivant en sortie, il réitère ce processus pour générer du texte de façon itérative.
+Devstral est un transformer LLM entraîné pour comprendre et générer du code ainsi que pour agir comme agent logiciel.
 
-Il utilise une architecture type transformer avec des mécanismes d'attention multi-têtes (self-attention), c'est à dire qui vont pondérer chacun des éléments de la séquence en fonction des autres. Ces mécanismes de self-attention permettent au modèle d'apprendre les relations entre tokens (syntaxe, relations sémantiques, dépendances longues, grammaire, structure du langage, etc).
-Llama 2 utilise une attention causale, c'est à dire que chaque token ne peut voir que les tokens précédents (process auto-regressif), le mask empêche de regarder le futur.
+Il fonctionne sur le principe de prédiction de token suivant, enrichi par un fine-tuning orienté instructions pour améliorer la capacité à suivre des consignes complexes dans des environnements logiciels et interpréter des consignes complexes pour générer ou classer du texte.
 
-![alt text](Basic-architecture-of-GPT-and-LLaMA-models-with-differences.png)
+Le modèle peut gérer de très longs contextes (jusqu’à 256 000 tokens), permettant de traiter des projets volumineux de manière cohérente.
 
+Adaptation NLP : Pour la classification multi-classe, le modèle est utilisé pour générer la catégorie attendue à partir d’un texte donné, soit via prompt clair, soit via fine-tuning léger sur un dataset annoté.
 
+![alt text](devstral_fine_tuning.png)
 
 
 ## III- Modélisation
 
-La méthodologie de modélisation de LLaMA 2 repose sur un Transformer auto-régresseur entraîné par prédiction du token suivant, puis affiné par apprentissage supervisé et par renforcement à partir de retours humains. L’évaluation combine des métriques automatiques classiques et des évaluations humaines, tandis que l’optimisation vise un compromis entre performance, stabilité et coût de calcul.
-
 
 ### Spécificités architecturales du modèle
 
-LLaMA 2 repose sur une architecture Transformer moderne optimisée, composée de blocs répétés comprenant :
+Architecture transformer classique avec modifications pour agents logiciels.
 
-1- Self-attention causale multi-têtes
-2- RMSNorm (normalisation)
-3- MLP avec SwiGLU
-4- Connexions résiduelles
+123 milliards de paramètres dans la version Instruct.
 
-Spécificités architecturales de LlaMA2 :
+Optimisations pour latence et gestion de mémoire lors de l’inférence sur projets de code volumineux.
 
-- RoPE (Rotary Positional Embeddings) pour encoder la position des tokens
-- RMSNorm pour une normalisation plus efficace que LayerNorm
-- SwiGLU comme mécanisme de gating dans les couches fully-connected
-- Grouped-Query Attention (GQA) pour réduire les coûts mémoire (surtout pour les grands modèles)
+Capacité de long context window pour maintenir la cohérence sur plusieurs fichiers ou fonctions.
 
+Adapté pour le traitement séquentiel de données textuelles ou de code, avec une cohérence sur plusieurs entrées.
 
-1- RoPE [Rotary Positional Embeddings] : gère l'information de position des tokens.
-Avant on ajoutait un vecteur de position au vecteur d'embedding du token; RoPE encode la position comme une rotation, pas comme une addition :
-- chaque mot est un point dans l’espace vectoriel
-- la position du mot correspond à un angle de rotation
-- deux mots proches ont des rotations proches
-
-=> Le modèle apprend les distances relatives entre les mots
-=> plus performant sur les séquences longues
-
-
-2- RMSNorm – Root Mean Square Normalization
-
-On normalise les valeurs pour éviter les explosions ou disparitions de gradients et assurer la stabilité des entrainements.
-RMSNorm est une version simplifiée et plus efficace de LayerNorm.
-
-- LayerNorm : centralise et norme
-- RMSNorm : normalise directement sans recentrage
-
-=> plus rapide (temps de calculs réduit), plus stable, moins coûteux en mémoire
-
-
-3- SwiGLU ou Switch
-
-SwiGLU est un mécanisme de gating utilisé à l’intérieur du bloc fully-connected du transformer.
-SwiGLU combine une activation (Swish) + une porte (GLU).
-Elle permet de moduler dynamiquement l’information transmise entre les couches fully-connected, elle sert de filtre de l'information.
 
 ### Données et stratégies d'entrainement
 
-1- pré-entrainement auto-supervisé sur des données massives 
-=> objectif : prédire le token suivant
-2- fine_tuning supervisé 
-=> objectif : améliorer l’utilité et la pertinence des réponses [assistant instructionnel]
-3- alignement par RLHF [Reward maximization]: 
-Génération de plusieurs réponses pour une même instruction -> Classement des réponses par des évaluateurs humains -> Entraînement d’un modèle de récompense
-=> Le modèle apprend à :
-- produire des réponses préférées par les humains
-- réduire les comportements indésirables
-- améliorer la sécurité et la cohérence
+Corpus de code multi-langages provenant de bases open-source et de dépôts privés (avec licence).
+
+Fine-tuning instructif pour améliorer la compréhension des consignes, la génération de code et la gestion de pipelines multi-fichiers.
+
+Techniques : mélange de pré-entraînement général + fine-tuning agentique, parfois accompagné de RLHF (Reinforcement Learning from Human Feedback) pour la conformité et la sécurité.
 
 
 ### Fonction de perte : 
 
-- [1 et 2] : cross-entropy 
-- [3] : optimisation du modèle via PPO (Proximal Policy Optimization)
+Cross-entropy loss pour la prédiction de token suivant, standard dans les LLM.
+
+Ajustements spécifiques pour les tâches instructives afin de prioriser la conformité aux instructions et la cohérence de génération multi-fichiers.
+
 
 ### Métriques d'évaluation :
 
-Contrairement aux modèles classiques, l’évaluation de LLaMA 2 repose sur une combinaison de métriques automatiques et humaines.
+SWE-bench pour la performance en développement logiciel.
 
-Métriques automatiques :
+Exact match (EM) et code execution accuracy pour évaluer la précision du code généré.
 
-1- Perplexité
+Mesures de suivi d’instructions pour la qualité de réponse dans des contextes agentiques.
 
-- Mesure la capacité du modèle à prédire le texte
-- Plus la perplexité est basse, meilleur est le modèle
-- Utilisée principalement lors du pré-entraînement
-
-2- Benchmarks NLP standards
-
-- compréhension de texte
-- raisonnement logique
-- génération contrôlée
-
-=> Permettent de comparer LLaMA 2 à d’autres modèles open-source.
-
-2- Évaluation humaine (plus particulièrement pour LLaMA 2-Chat)
-
-- jugement de la qualité des réponses
-- comparaison directe entre modèles
-- critères :
-    - utilité
-    - clarté
-    - sécurité
-    - alignement avec l’intention utilisateur
-
-=> Métriques humaines principales pour les modèles Chat.
-
-3- Métriques de sécurité et robustesse
-
-- tests dédiés aux réponses sensibles
-- Évaluation des biais, hallucinations et comportements à risque
-
+Temps d’inférence et consommation mémoire pour l’évaluation de l’efficacité pratique.
 
 
 ## Synthèse des résultats
 
+
+
 ## Analyse de la feature importance locale et globale
+
+
+
 
 ## Limitations et améliorations possibles
